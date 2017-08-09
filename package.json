@@ -1,0 +1,19 @@
+{
+  "name": "Index-dataset",
+  "main": "index.js",
+  "dependencies": {
+    "elasticsearch": "^13.3.1",
+    "mongodb": "^2.2.31"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.24.1",
+    "babel-preset-env": "^1.6.0",
+    "babel-preset-es2015": "^6.24.1",
+    "eslint": "^4.3.0",
+    "eslint-config-airbnb-base": "^11.3.1",
+    "eslint-plugin-import": "^2.7.0"
+  },
+  "scripts": {
+    "start": "babel-node index.js"
+  }
+}
