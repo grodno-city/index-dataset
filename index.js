@@ -1,6 +1,7 @@
 import assert from 'assert';
 import { MongoClient } from 'mongodb';
 import elasticsearch from 'elasticsearch';
+import fs from 'fs';
 
 import localConfig from './config';
 
@@ -33,6 +34,7 @@ MongoClient.connect(url, function(err, db) {
 
       db.close();
       console.log(map);
+      fs.writeFileSync('fundsMap.json', JSON.stringify(map, null, 2));
     });
 });
 
