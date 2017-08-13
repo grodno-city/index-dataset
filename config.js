@@ -1,13 +1,13 @@
 module.exports = {
     connection: {
-        host: "hannakazello:mTTg5596Nah73ypt4pKmU4a2@ds123933.mlab.com:23933",
-        port: 23933,
-        name: "library-data-set"
+        host: "localhost",
+        port: 27017,
+        name: "test"
     },
     application: {
         port: 8080,
         DEBUG: true
     },
-    "elasticHost": "127.0.0.1",
-    "elasticPort": 9200,
+    "elasticHost": "https://elastic:jesEsUy5exSj0LpQVBo1TnPY@7628f5bab434a3d85d1b9726b8576a21.eu-west-1.aws.found.io",
+    "elasticPort": 9243,
 }
