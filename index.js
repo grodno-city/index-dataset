@@ -3,51 +3,88 @@ import { MongoClient } from 'mongodb';
 import elasticsearch from 'elasticsearch';
 import fs from 'fs';
 
-import map from './fundsMap.json';
+import fundsMap from './fundsMap.json';
 import localConfig from './config';
+
+let fieldsMap = {};
 
 const client = new elasticsearch.Client({
   host: `${localConfig.elasticHost}:${localConfig.elasticPort}`,
 });
 
-function expandMap(fundsName) {
-  if (map[fundsName] === undefined) {
-    map[fundsName] = Object.keys(map).length + 1;
-  }
-}
-
-function indexReferences(record, callback) {
-  const body = [];
-  record.funds.forEach((fund) => {
-    body.push({ index:  { _index: 'funds', _type: map[fund.name], _id: record.id } });
+function indexFunds(body, record) {
+    record.funds.forEach((fund) => {
+    if (fundsMap[fund.name] === undefined) {
+      fundsMap[fund.name] = Object.keys(fundsMap).length + 1;
+    }
+    body.push({ index:  { _index: 'funds', _type: fundsMap[fund.name], _id: record.id } });
     body.push({ recordID: record.id, count: fund.count });
   });
-
-  client.bulk({
-    body,
-  }, callback);
+  return body;
 }
+
+function indexReferences(body, record) {
+  record.references.forEach((ref) => {
+      const values = ref.value.split('*');
+      values.forEach((val) => {
+          body.push({ index:  { _index: 'references', _type: ref.tag, _id: record.id } });
+          body.push({ recordID: record.id, value: val });
+      });
+  });
+ return body;
+}
+
+function indexFields(body, record) {
+  record.fields.forEach((field) => {
+    if (fieldsMap[field.tag] === undefined) {
+      fieldsMap[field.tag] = Object.keys(fieldsMap).length + 1;
+    }
+    body.push({ index:  { _index: 'fields', _type: fieldsMap[field.tag], _id: record.id } });
+    body.push({ recordID: record.id, value: field.value });
+ });
+ return body;
+}
+
+
+function indexRecord(record, callback) {
+    const body = [
+                    { index:  { _index: 'raw', _type: 'def', _id: record.id } },
+                    { record }
+                ].concat(indexFields([], record)).concat(indexFunds([], record)).concat(indexReferences([],record));
+  callback(body);
+}
+
 
 const url = `mongodb://${localConfig.connection.host}/${localConfig.connection.name}`;
 
 MongoClient.connect(url, (connectionErr, db) => {
   assert.equal(null, connectionErr);
   console.log('Connected correctly to server.');
-  const collection = db.collection('raw-data-set');
-  collection.find().toArray((err, docs) => {
-    assert.equal(null, err);
-    docs.forEach((doc) => {
-      if (doc.funds.length !== 0) {
-        doc.funds.map(fund => fund.name).forEach(expandMap);
-        indexReferences(doc, (indexErr) => {
-          if (err) {
-            console.log(doc.id, indexErr.code);
-          }
+  const collection = db.collection('books');
+  collection.find(function(err, cursor) {
+    cursor.each(function(err, item) {
+ 
+      if (item != null) {
+        indexRecord(item, (body) => {
+            if (body.length !== 0) {
+                client.bulk({
+                    body, 
+                }, (indexErr, resp) => {
+                    if (indexErr) {
+                        console.log(item.id, indexErr.message);
+                    }
+                    else {
+                        console.log(item.id);
+                    }
+                });
+            }
         });
+      } else {
+        console.log("That's all!");
+        db.close();
+        fs.writeFileSync('fundsMap.json', JSON.stringify(fundsMap, null, 2));
+        fs.writeFileSync('fieldsMap.json', JSON.stringify(fieldsMap, null, 2));
       }
     });
-
-    db.close();
-    fs.writeFileSync('fundsMap.json', JSON.stringify(map, null, 2));
   });
 });
