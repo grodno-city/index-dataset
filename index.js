@@ -5,15 +5,15 @@ import fs from 'fs';
 
 import fundsMap from './fundsMap.json';
 import localConfig from './config';
-
-let fieldsMap = {};
+import fieldsMap from './fieldsMap.json';
 
 const client = new elasticsearch.Client({
   host: `${localConfig.elasticHost}:${localConfig.elasticPort}`,
+  // log: 'trace',
 });
 
 function indexFunds(body, record) {
-    record.funds.forEach((fund) => {
+  record.funds.forEach((fund) => {
     if (fundsMap[fund.name] === undefined) {
       fundsMap[fund.name] = Object.keys(fundsMap).length + 1;
     }
@@ -25,13 +25,13 @@ function indexFunds(body, record) {
 
 function indexReferences(body, record) {
   record.references.forEach((ref) => {
-      const values = ref.value.split('*');
-      values.forEach((val) => {
-          body.push({ index:  { _index: 'references', _type: ref.tag, _id: record.id } });
-          body.push({ recordID: record.id, value: val });
-      });
+    const values = ref.value.split('*');
+    values.forEach((val) => {
+      body.push({ index:  { _index: 'references', _type: ref.tag, _id: record.id } });
+      body.push({ recordID: record.id, value: val });
+    });
   });
- return body;
+  return body;
 }
 
 function indexFields(body, record) {
@@ -41,16 +41,18 @@ function indexFields(body, record) {
     }
     body.push({ index:  { _index: 'fields', _type: fieldsMap[field.tag], _id: record.id } });
     body.push({ recordID: record.id, value: field.value });
- });
- return body;
+  });
+  return body;
 }
 
 
 function indexRecord(record, callback) {
-    const body = [
-                    { index:  { _index: 'raw', _type: 'def', _id: record.id } },
-                    { record }
-                ].concat(indexFields([], record)).concat(indexFunds([], record)).concat(indexReferences([],record));
+  const body = [
+    { index:  { _index: 'raw', _type: 'def', _id: record.id } },
+    { record },
+  ].concat(indexFields([], record))
+  .concat(indexFunds([], record))
+  .concat(indexReferences([], record));
   callback(body);
 }
 
@@ -61,23 +63,22 @@ MongoClient.connect(url, (connectionErr, db) => {
   assert.equal(null, connectionErr);
   console.log('Connected correctly to server.');
   const collection = db.collection('books');
-  collection.find(function(err, cursor) {
-    cursor.each(function(err, item) {
- 
+  collection.find((err, cursor) => {
+    cursor.each((err, item) => {
+
       if (item != null) {
         indexRecord(item, (body) => {
-            if (body.length !== 0) {
-                client.bulk({
-                    body, 
-                }, (indexErr, resp) => {
-                    if (indexErr) {
-                        console.log(item.id, indexErr.message);
-                    }
-                    else {
-                        console.log(item.id);
-                    }
-                });
-            }
+          if (body.length !== 0) {
+            client.bulk({
+              body,
+            }, (indexErr) => {
+              if (indexErr) {
+                console.log(item.id, indexErr.message);
+              } else {
+                console.log(item.id);
+              }
+            });
+          }
         });
       } else {
         console.log("That's all!");
