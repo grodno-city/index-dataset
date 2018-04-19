@@ -7,34 +7,28 @@
               "index": false
             },
             "fields": {
-              "properties": {
-                "type" : "nested",
+              "type" : "nested",
                 "properties" : {
                     "tag" : { "type" : "text" },
                     "value" : { "type" : "text" }
                 }
-              }
             },
             "funds": {
-              "properties": {
-                "type" : "nested",
+              "type" : "nested",
                 "properties" : {
-                    "count" : { "type" : "number", "index": false },
+                    "count" : { "type" : "long", "index": false },
                     "name" : { "type" : "text" }
                 }
-              }
             },
             "id": {
               "type": "long"
             },
             "references": {
-              "properties": {
-                "type" : "nested",
+              "type" : "nested",
                 "properties" : {
                     "tag" : { "type" : "text" },
                     "value" : { "type" : "text" }
                 }
-              }
             }
           }
         }
