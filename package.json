@@ -2,7 +2,7 @@
   "name": "Index-dataset",
   "main": "index.js",
   "dependencies": {
-    "async": "^2.5.0",
+    "async": "^2.6.0",
     "elasticsearch": "^13.3.1",
     "mongodb": "^2.2.31"
   },
