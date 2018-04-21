@@ -10,5 +10,7 @@ module.exports = {
   },
   elasticsearch: {
     host: 'http://localhost:9200',
+    index: 'records',
+    type: 'info',
   },
 };
