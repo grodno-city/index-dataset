@@ -8,6 +8,7 @@ module.exports = {
     step: 500,
     snapshot: './.index-books-snapshot',
   },
-  elasticHost: 'localhost',
-  elasticPort: 9200,
+  elasticsearch: {
+    host: 'http://localhost:9200',
+  },
 };

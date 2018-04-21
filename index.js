@@ -32,7 +32,7 @@ async function indexRecord(startValue, nPerPage, db, client) {
 }
 
 const client = new elasticsearch.Client({
-  host: `http://${localConfig.elasticHost}:${localConfig.elasticPort}`,
+  host: localConfig.elasticsearch.host,
   requestTimeout: 300000,
 });
 
