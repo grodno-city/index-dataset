@@ -34,7 +34,6 @@ async function indexRecord(startValue, nPerPage, db, client) {
 const client = new elasticsearch.Client({
   host: `http://${localConfig.elasticHost}:${localConfig.elasticPort}`,
   requestTimeout: 300000,
-  // log: 'trace',
 });
 
 const url = `mongodb://${localConfig.connection.host}/${localConfig.connection.name}`;
