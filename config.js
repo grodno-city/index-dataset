@@ -1,5 +1,5 @@
 module.exports = {
-  connection: {
+  mongodb: {
     host: 'localhost',
     port: 27017,
     name: 'library',

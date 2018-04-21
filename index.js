@@ -36,7 +36,7 @@ const client = new elasticsearch.Client({
   requestTimeout: 300000,
 });
 
-const url = `mongodb://${localConfig.connection.host}/${localConfig.connection.name}`;
+const url = `mongodb://${localConfig.mongodb.host}/${localConfig.mongodb.name}`;
 
 MongoClient.connect(
   url,
