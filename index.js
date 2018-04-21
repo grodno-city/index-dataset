@@ -11,8 +11,8 @@ const STEP = 500;
 function indexRecord(startValue, nPerPage, db, client) {
   const endValue = null;
   db.books
-    .find({ _id: { $gt: startValue } })
     .sort({ _id: 1 })
+    .find({ id: { $gte: startValue } })
     .limit(nPerPage)
     .then((books) => {
       processItem(books, (processItemErr, body) => {
