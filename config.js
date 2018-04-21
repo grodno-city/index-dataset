@@ -7,8 +7,6 @@ module.exports = {
   application: {
     step: 500,
     snapshot: './.index-books-snapshot',
-    port: 8080,
-    DEBUG: true,
   },
   elasticHost: 'localhost',
   elasticPort: 9200,
