@@ -7,8 +7,8 @@ import whilst from 'async/whilst';
 import localConfig from './config';
 import processItem from './processItem';
 
-const STEP = localConfig.aplication.step;
-const snapshot = localConfig.aplication.snapshot;
+const STEP = localConfig.application.step;
+const snapshot = localConfig.application.snapshot;
 
 async function indexRecord(startValue, nPerPage, db, client) {
   console.log('startValue: ', startValue);
