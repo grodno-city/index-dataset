@@ -9,7 +9,14 @@
             "fields": {
               "type" : "nested",
                 "properties" : {
-                    "tag" : { "type" : "text" },
+                    "tag" : {
+                      "type" : "text",
+                      "fields": {
+                        "raw": {
+                          "type":  "keyword"
+                        }
+                      }
+                    },
                     "value" : { "type" : "text" }
                 }
             },
@@ -17,7 +24,14 @@
               "type" : "nested",
                 "properties" : {
                     "count" : { "type" : "long", "index": false },
-                    "name" : { "type" : "text" }
+                    "name" : {
+                      "type" : "text",
+                      "fields": {
+                        "raw": {
+                          "type":  "keyword"
+                        }
+                      }
+                    }
                 }
             },
             "id": {
@@ -26,7 +40,14 @@
             "references": {
               "type" : "nested",
                 "properties" : {
-                    "tag" : { "type" : "text" },
+                    "tag" : {
+                      "type" : "text",
+                      "fields": {
+                        "raw": {
+                          "type":  "keyword"
+                        }
+                      }
+                    },
                     "value" : { "type" : "text" }
                 }
             }
