@@ -9,7 +9,12 @@ export default (records) => {
       ref.value.split('*').forEach(value => newRefs.push({ value, tag: ref.tag }));
     });
 
-    body.push({ index:  { _index: localConfig.index, _type: localConfig.type, _id: copy.id } });
+    body.push({ index:  {
+      _index: localConfig.elasticsearch.index,
+      _type: localConfig.elasticsearch.type,
+      _id: copy.id,
+    },
+    });
     copy.references = newRefs;
     delete copy.years;
     delete copy._id;
