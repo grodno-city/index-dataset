@@ -12,12 +12,19 @@
                     "tag" : {
                       "type" : "text",
                       "fields": {
-                        "raw": {
+                        "raw": { 
                           "type":  "keyword"
                         }
                       }
                     },
-                    "value" : { "type" : "text" }
+                    "value" : {
+                      "type" : "text",
+                      "fields": {
+                        "raw": {
+                          "type":  "keyword"
+                        }
+                      }
+                    }
                 }
             },
             "funds": {
@@ -48,7 +55,14 @@
                         }
                       }
                     },
-                    "value" : { "type" : "text" }
+                    "value" : {
+                      "type" : "text",
+                      "fields": {
+                        "raw": {
+                          "type":  "keyword"
+                        }
+                      }
+                    }
                 }
             }
           }
